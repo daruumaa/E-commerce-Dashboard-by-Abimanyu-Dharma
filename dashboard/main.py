@@ -11,12 +11,12 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # Dataset
 datetime_cols = ["order_approved_at", "order_delivered_carrier_date", "order_delivered_customer_date", "order_estimated_delivery_date", "order_purchase_timestamp", "shipping_limit_date"]
-all_df = pd.read_csv('data/all_data.csv')
+all_df = pd.read_csv('/content/data/all_data.csv')
 all_df.sort_values(by="order_approved_at", inplace=True)
 all_df.reset_index(inplace=True)
 
 # Geolocation Dataset
-geolocation = pd.read_csv('data/geolocation.csv')
+geolocation = pd.read_csv('/content/data/geolocation.csv')
 data = geolocation.drop_duplicates(subset='customer_unique_id')
 
 for col in datetime_cols:
@@ -28,7 +28,7 @@ max_date = all_df["order_approved_at"].max()
 # Sidebar
 with st.sidebar:
     # Logo Image
-    st.image("dashboard/dharmacc.png")
+    st.image("/content/dharmacc.png")
 
     # Date Range
     start_date, end_date = st.date_input(
@@ -89,27 +89,16 @@ with tab2:
     with col2:
         st.metric(label= "Average Spend", value = format_currency(sum_spend_df["total_spend"].mean(), "IDR", locale="id_ID"))
 
-    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(45, 25))
-
-    colors = ["#FE6B38", "#652B20", "#652B20", "#652B20", "#652B20"]
-
-    sns.barplot(x="product_count", y="product_category_name_english", data=sum_order_items_df.head(5), palette=colors, ax=ax[0])
-    ax[0].set_ylabel(None)
-    ax[0].set_xlabel("Number of Sales", fontsize=30)
-    ax[0].set_title("Produk paling banyak terjual", loc="center", fontsize=50)
-    ax[0].tick_params(axis ='y', labelsize=35)
-    ax[0].tick_params(axis ='x', labelsize=30)
-
-    sns.barplot(x="product_count", y="product_category_name_english", data=sum_order_items_df.sort_values(by="product_count", ascending=True).head(5), palette=colors, ax=ax[1])
-    ax[1].set_ylabel(None)
-    ax[1].set_xlabel("Number of Sales", fontsize=30)
-    ax[1].invert_xaxis()
-    ax[1].yaxis.set_label_position("right")
-    ax[1].yaxis.tick_right()
-    ax[1].set_title("Produk paling sedikit terjual", loc="center", fontsize=50)
-    ax[1].tick_params(axis='y', labelsize=35)
-    ax[1].tick_params(axis='x', labelsize=30)
-
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.plot(
+        sum_spend_df["order_approved_at"],
+        sum_spend_df["total_spend"],
+        marker="o",
+        linewidth=2,
+        color="#246368"
+    )
+    ax.tick_params(axis="x", rotation=45)
+    ax.tick_params(axis="y", labelsize=15)
     st.pyplot(fig)
 
 # Order Items
