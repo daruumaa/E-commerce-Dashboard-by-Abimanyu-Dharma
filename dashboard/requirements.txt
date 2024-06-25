@@ -5,3 +5,8 @@ Babel==2.12.1
 matplotlib==3.7.1
 seaborn==0.12.2
 urllib3==2.0.2
+plotly
+scipy
+Flask
+flask-cors
+pyforest
